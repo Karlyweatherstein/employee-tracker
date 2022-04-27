@@ -1,0 +1,29 @@
+{
+  "dependencies": {
+    "express": "^4.18.0",
+    "inquirer": "^8.2.3",
+    "mysql": "^2.18.1",
+    "mysql2": "^2.3.3"
+  },
+  "scripts": {
+    "test": "jest",
+    "start": "node server.js"
+  },
+  "name": "employee-tracker",
+  "description": "",
+  "version": "1.0.0",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Karlyweatherstein/employee-tracker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Karlyweatherstein/employee-tracker/issues"
+  },
+  "homepage": "https://github.com/Karlyweatherstein/employee-tracker#readme",
+  "devDependencies": {
+    "jest": "^28.0.2"
+  }
+}
