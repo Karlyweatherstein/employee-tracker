@@ -1,6 +1,10 @@
 const express = require('express');
 const inquirer = require('inquirer');
+const prompts = require('prompts');
+const { start } = require('repl');
 const db = require('./db/connection');
+const router = express.Router();
+
 
 
 const PORT = process.env.PORT || 3001;
@@ -10,17 +14,8 @@ const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-// Default response for any other request (Not Found)
 
 
-app.get('/', (req, res) => {
-    res.json({
-      message: 'Hello World'
-    });
-});
-
-//THEN I am presented with the following options: view all departments, view all roles, view all employees, 
-// add a department, add a role, add an employee, and update an employee role
 
 const directory = [
     {
@@ -61,7 +56,32 @@ function prompt() {
         })
 }
 
+// View all departments
 
+function viewDepartments() {
+        const sql = `SELECT * FROM department`;
+      
+        db.query(sql, (err, rows) => {
+          if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+          }
+          console.table(rows)
+    });
+    
+}
+
+function viewRoles() {
+    console.log('this also worked!')
+}
+
+
+
+
+prompt()
+
+
+// Default response for any other request (Not Found)
 app.use((req, res) => {
   res.status(404).end();
 });
