@@ -57,7 +57,6 @@ function prompt() {
 }
 
 // View all departments
-
 function viewDepartments() {
         const sql = `SELECT * FROM department`;
       
@@ -68,11 +67,32 @@ function viewDepartments() {
           }
           console.table(rows)
     });
-    
 }
 
+// View all roles
 function viewRoles() {
-    console.log('this also worked!')
+    const sql = `SELECT * FROM role`;
+  
+    db.query(sql, (err, rows) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+        return;
+      }
+      console.table(rows)
+    });
+}
+
+// View all employees
+function viewEmployees() {
+    const sql = `SELECT * FROM employee`;
+  
+    db.query(sql, (err, rows) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+        return;
+      }
+      console.table(rows)
+    });
 }
 
 
