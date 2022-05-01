@@ -93,10 +93,75 @@ function viewEmployees() {
       }
       console.table(rows)
     });
+};
+
+
+// Add a department
+function addDepartment() {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'departmentName',
+            message: 'What is the name of the department?'
+        }
+    ]);   
+}
+
+// Add a role
+function addRole() {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'roleName',
+            message: 'What is the name of the role?'
+        },
+        {
+            type: 'input',
+            name: 'salaryAmount',
+            message: 'What is the salary of the role?'
+        },
+        {
+            type: 'input',
+            name: 'rolesDepartment',
+            message: 'What department does the role belong to?'
+        }
+    ]);   
+}
+
+// Add an employee
+function addEmployee() {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'first_name',
+            message: 'What is the employees first name?'
+        },
+        {
+            type: 'input',
+            name: 'last_name',
+            message: 'What is the employees last name?'
+        },
+        {
+            type: 'input',
+            name: 'employeesRole',
+            message: 'What is the employees role?'
+        },
+        {
+            type: 'input',
+            name: 'manager',
+            message: 'Who is the employees manager?'
+        }
+    ]);   
 }
 
 
 
+
+
+
+
+
+// BONUS - delete departments, roles, and employees
 
 prompt()
 
