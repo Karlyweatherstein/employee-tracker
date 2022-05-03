@@ -98,13 +98,22 @@ function viewEmployees() {
 
 // Add a department
 function addDepartment() {
+    const sql = `INSERT INTO department (name) VALUES (?)`;
     inquirer.prompt([
         {
             type: 'input',
-            name: 'departmentName',
+            name: 'name',
             message: 'What is the name of the department?'
         }
     ]);   
+    // db.query(sql, (err, rows) => {
+    //     if (err) {
+    //       res.status(404).json({ error: err.message });
+    //       return;
+    //     }
+    //     console.table(rows)
+    //     console.log('Added department to database!')
+    // });
 }
 
 // Add a role
