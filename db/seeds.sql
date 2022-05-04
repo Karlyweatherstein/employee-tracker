@@ -1,5 +1,4 @@
 
-
 INSERT INTO department (name)
 VALUES
     ('HR'),
@@ -22,16 +21,18 @@ VALUES
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES
-        ('Karly', 'Weatherstein', 1, 3),
-        ('Diane', 'Smith', 2, null),
-        ('Katie', 'Bev', 3, 1),
+        ('Karly', 'Weatherstein', 1, 2),
+        ('Diane', 'Smith', 4, null),
+        ('Katie', 'Bev', 2, 2),
         ('Parker', 'Travis', 4, null),
-        ('Sarah', 'Clem', 5, null),
-        ('John', 'Doe', 6, 2),
-        ('Kat', 'Veira', 7, 5),
-        ('Lacy', 'Greene', 8, null),
-        ('Kim', 'Riley', 9, 4),
-        ('Jarod', 'Smith', 10, null);
+        ('Sarah', 'Clem', 2, null),
+        ('John', 'Doe', 3, 2),
+        ('Kat', 'Veira', 7, 2),
+        ('Lacy', 'Greene', 4, null),
+        ('Kim', 'Riley', 5, 2),
+        ('Jarod', 'Smith', 7, null);
+        ('Jarod', 'Smith', 6, null);
+
 
 
 

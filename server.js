@@ -1,10 +1,6 @@
 const express = require('express');
 const inquirer = require('inquirer');
-const prompts = require('prompts');
-const { start } = require('repl');
 const db = require('./db/connection');
-const router = express.Router();
-
 
 
 const PORT = process.env.PORT || 3001;
@@ -16,7 +12,7 @@ app.use(express.json());
 
 
 
-
+// List of options to choose from
 const directory = [
     {
         type: 'list',
@@ -54,7 +50,7 @@ function prompt() {
                 updateEmployee();
             }
         })
-}
+};
 
 // View all departments
 function viewDepartments() {
@@ -66,32 +62,43 @@ function viewDepartments() {
             return;
           }
           console.table(rows)
+          prompt();
     });
-}
+};
 
 // View all roles
 function viewRoles() {
-    const sql = `SELECT * FROM role`;
+    const sql = `SELECT role.*, department.name AS department
+    FROM role 
+    LEFT JOIN department ON role.department_id = department.id`;
   
     db.query(sql, (err, rows) => {
       if (err) {
-        res.status(500).json({ error: err.message });
+        res.status(400).json({ error: err.message });
         return;
       }
       console.table(rows)
+      prompt();
+
     });
-}
+};
 
 // View all employees
+//Added id, first, last, department
+// NEED title, salary and managers
 function viewEmployees() {
-    const sql = `SELECT * FROM employee`;
+    const sql = `SELECT employee.id, employee.first_name, employee.last_name, department.name AS Department FROM employee
+     JOIN role ON employee.role_id = role.id 
+     JOIN department ON role.department_id = department.id`;
   
     db.query(sql, (err, rows) => {
       if (err) {
-        res.status(500).json({ error: err.message });
+        res.status(400).json({ error: err.message });
         return;
       }
       console.table(rows)
+      prompt();
+
     });
 };
 
@@ -114,7 +121,7 @@ function addDepartment() {
     //     console.table(rows)
     //     console.log('Added department to database!')
     // });
-}
+};
 
 // Add a role
 function addRole() {
@@ -161,7 +168,7 @@ function addEmployee() {
             message: 'Who is the employees manager?'
         }
     ]);   
-}
+};
 
 
 
