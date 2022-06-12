@@ -84,13 +84,12 @@ function viewRoles() {
 };
 
 // View all employees
-//Added id, first, last, department
-// NEED title, salary and managers
 function viewEmployees() {
-    const sql = `SELECT employee.id, employee.first_name, employee.last_name, department.name AS Department FROM employee
-     JOIN role ON employee.role_id = role.id 
-     JOIN department ON role.department_id = department.id`;
-  
+    const sql = `SELECT employee.id, employee.first_name, employee.last_name, department.name AS department, role.title, role.salary 
+     FROM employee, role, department
+     WHERE department.id = role.department_id
+     AND role.id = employee.role_id
+    `  
     db.query(sql, (err, rows) => {
       if (err) {
         res.status(400).json({ error: err.message });
