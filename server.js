@@ -155,7 +155,7 @@ function addRole() {
         ])
         .then((answer) => {
             const roleSql = `SELECT id FROM department WHERE name = "${answer.deptName}"`
-            db.query(roleSql, (err, row)=>{
+            db.query(roleSql, (err, row) => {
                 if (err) throw err;
                 let newId = row.map(newIdHere => newIdHere.id);
                 addToRole(answer.roleName, answer.salaryAmount, newId[0])
@@ -166,6 +166,14 @@ function addRole() {
 
 // Add an employee
 function addEmployee() {
+    const sql =`SELECT * FROM role`;
+    let roleArr = [];
+    db.query(sql, (err, rows) => {
+        if (err) throw err;
+        for (let i=0; i<rows.length; i++){
+            roleArr.push(rows[i].title);
+        }
+    });
     inquirer.prompt([
         {
             type: 'input',
@@ -178,25 +186,26 @@ function addEmployee() {
             message: 'What is the employees last name?'
         },
         {
-            type: 'input',
+            type: 'list',
             name: 'employeesRole',
-            message: 'What is the employees role?'
+            message: 'What is the employees role?',
+            choices: roleArr
         },
         {
             type: 'input',
-            name: 'manager',
-            message: 'Who is the employees manager?'
+            name: 'managerId',
+            message: 'Who is the employees manager(Enter their ID - "1" or "2")?'
         }
     ]) 
     .then((answer) => {
-        db.query(sql, answer.departmentName, (err, rows) => {
-       if (err) {
-         res.status(404).json({ error: err.message });
-         return;
-       }
-       console.log('Added department to database!')
-       prompt();
-       });
+        const empSql = `SELECT id FROM role WHERE title = "${answer.employeesRole}"`
+        db.query(empSql, (err, row) => { 
+            if (err) throw err;
+            let newEmpId = row.map(newEmpHere => newEmpHere.id);
+            addToEmployee(answer.first_name, answer.last_name, newEmpId, answer.managerId)
+        });
+        prompt();
+
    })
 };
 
@@ -206,17 +215,29 @@ function addToRole (title, salary, id) {
     db.query(sql, (err, rows) => {
         if (err) throw err;
         console.log('Added department to database!');
-        
     });
 };
 
 
 //Function that adds the responses into the employee table
-function addToEmployee () {
-
+function addToEmployee (firstName, lastName, roleId, managerId) {
+    const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${firstName}", "${lastName}", "${roleId}", "${managerId}")`
+    db.query(sql, (err, rows) => {
+        if (err) throw err;
+        console.log('Added employee to database!');
+    })
 };
 
 
+//Function that updates the employees role in the employee table
+function updateEmpRole (name, roleId) {
+    const sql = `UPDATE employee SET role_id = "${roleId}" WHERE first_name = "${name}"`
+    db.query(sql, (err, rows) => {
+        if (err) throw err;
+        console.log('Updated employee role in database!');
+    })
+
+};
 
 
 
