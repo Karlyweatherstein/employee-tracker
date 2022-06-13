@@ -47,7 +47,7 @@ function prompt() {
             } else if (val.options === 'Add an employee') {
                 addEmployee();
             } else if (val.options === 'Update an employee role') {
-                updateEmployee();
+                updateEmployeeRole();
             }
         })
 };
@@ -201,13 +201,60 @@ function addEmployee() {
         const empSql = `SELECT id FROM role WHERE title = "${answer.employeesRole}"`
         db.query(empSql, (err, row) => { 
             if (err) throw err;
-            let newEmpId = row.map(newEmpHere => newEmpHere.id);
-            addToEmployee(answer.first_name, answer.last_name, newEmpId, answer.managerId)
+            let newId = row.map(newIdHere => newIdHere.id);
+            addToEmployee(answer.first_name, answer.last_name, newId, answer.managerId)
         });
         prompt();
 
    })
 };
+
+// Update an employees role
+function updateEmployeeRole() {
+    const sql = `SELECT first_name, last_name, role.title 
+    FROM employee, role
+    WHERE employee.role_id = role.id`;
+    db.query(sql, (err, rows) => {
+        if (err) throw err;
+        const allEmployees = rows;
+        let f_Name = allEmployees.map(emp => `${emp.first_name}`);
+        let l_Name = allEmployees.map(emp => `${emp.last_name}`);
+        const roleArray = allEmployees.map(emp => `${emp.title}`);
+        let allRoles = roleArray.filter((roles, index) => {
+            return roleArray.indexOf(roles) === index;
+        });
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'f_name',
+                message: 'What is the employees first name that you wish to update?',
+                choices: f_Name
+            },
+            {
+                type: 'list',
+                name: 'l_name',
+                message: 'What is the employees last name that you wish to update?',
+                choices: l_Name
+            },
+            {
+                type: 'list',
+                name: 'employeeRole',
+                message: 'What is the employees new role?',
+                choices: allRoles
+            }
+        ]) 
+        .then((answer) => {
+            const upSql = `SELECT id FROM role WHERE title = "${answer.employeeRole}"`
+            db.query(upSql, (err, row) => { 
+                if (err) throw err;
+                let newId = row.map(newIdHere => newIdHere.id);
+                updateEmpRole(answer.f_name, answer.l_name, newId)
+            });
+            prompt();
+       })
+    })
+};
+
 
 // Function that adds the responses into the role table
 function addToRole (title, salary, id) {
@@ -230,8 +277,8 @@ function addToEmployee (firstName, lastName, roleId, managerId) {
 
 
 //Function that updates the employees role in the employee table
-function updateEmpRole (name, roleId) {
-    const sql = `UPDATE employee SET role_id = "${roleId}" WHERE first_name = "${name}"`
+function updateEmpRole (f_name, l_name, roleId) {
+    const sql = `UPDATE employee SET role_id = "${roleId}" WHERE first_name = "${f_name}" AND last_name = "${l_name}"`
     db.query(sql, (err, rows) => {
         if (err) throw err;
         console.log('Updated employee role in database!');
