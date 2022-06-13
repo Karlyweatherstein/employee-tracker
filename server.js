@@ -58,8 +58,7 @@ function viewDepartments() {
       
         db.query(sql, (err, rows) => {
           if (err) {
-            res.status(500).json({ error: err.message });
-            return;
+            throw err;
           }
           console.table(rows)
           prompt();
@@ -74,8 +73,7 @@ function viewRoles() {
   
     db.query(sql, (err, rows) => {
       if (err) {
-        res.status(400).json({ error: err.message });
-        return;
+        throw err;
       }
       console.table(rows)
       prompt();
@@ -92,8 +90,8 @@ function viewEmployees() {
     `  
     db.query(sql, (err, rows) => {
       if (err) {
-        res.status(400).json({ error: err.message });
-        return;
+        throw err;
+        
       }
       console.table(rows)
       prompt();
@@ -108,40 +106,63 @@ function addDepartment() {
     inquirer.prompt([
         {
             type: 'input',
-            name: 'name',
+            name: 'departmentName',
             message: 'What is the name of the department?'
         }
-    ]);   
-    // db.query(sql, (err, rows) => {
-    //     if (err) {
-    //       res.status(404).json({ error: err.message });
-    //       return;
-    //     }
-    //     console.table(rows)
-    //     console.log('Added department to database!')
-    // });
+    ])   
+    .then((answer) => {
+         db.query(sql, answer.departmentName, (err, rows) => {
+        if (err) {
+            throw err;
+        }
+        console.log('Added department to database!')
+        prompt();
+        });
+    })
+   
 };
 
 // Add a role
 function addRole() {
-    inquirer.prompt([
-        {
-            type: 'input',
-            name: 'roleName',
-            message: 'What is the name of the role?'
-        },
-        {
-            type: 'input',
-            name: 'salaryAmount',
-            message: 'What is the salary of the role?'
-        },
-        {
-            type: 'input',
-            name: 'rolesDepartment',
-            message: 'What department does the role belong to?'
+    const sql = `SELECT * FROM department`;
+    let deptArr = [];
+    db.query(sql, (err, rows)=>{
+        if (err) throw err;
+        for (let i=0; i<rows.length; i++){
+            deptArr.push(rows[i].name);
         }
-    ]);   
-}
+    });
+    inquirer
+        .prompt([
+            {
+                type: 'input',
+                name: 'roleName',
+                message: 'What is the name of the role?',
+                
+            },
+            {
+                type: 'input',
+                name: 'salaryAmount',
+                message: 'What is the salary of the role?',
+                
+            },
+            {
+                type: 'list',
+                name: 'deptName',
+                message: 'Which department does the role belong to?',
+                choices: deptArr
+            }
+        ])
+        .then((answer) => {
+            const roleSql = `SELECT id FROM department WHERE name = "${answer.deptName}"`
+            db.query(roleSql, (err, row)=>{
+                if (err) throw err;
+                let newId = row.map(newIdHere => newIdHere.id);
+                addToRole(answer.roleName, answer.salaryAmount, newId[0])
+            });
+            prompt();
+        });
+};
 
 // Add an employee
 function addEmployee() {
@@ -166,17 +187,38 @@ function addEmployee() {
             name: 'manager',
             message: 'Who is the employees manager?'
         }
-    ]);   
+    ]) 
+    .then((answer) => {
+        db.query(sql, answer.departmentName, (err, rows) => {
+       if (err) {
+         res.status(404).json({ error: err.message });
+         return;
+       }
+       console.log('Added department to database!')
+       prompt();
+       });
+   })
+};
+
+// Function that adds the responses into the role table
+function addToRole (title, salary, id) {
+    const sql = `INSERT INTO role (title, salary, department_id) VALUES ("${title}", "${salary}", "${id}")`
+    db.query(sql, (err, rows) => {
+        if (err) throw err;
+        console.log('Added department to database!');
+        
+    });
+};
+
+
+//Function that adds the responses into the employee table
+function addToEmployee () {
+
 };
 
 
 
 
-
-
-
-
-// BONUS - delete departments, roles, and employees
 
 prompt()
 
