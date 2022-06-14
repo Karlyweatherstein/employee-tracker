@@ -166,8 +166,8 @@ function addRole() {
 
 // Add an employee
 function addEmployee() {
-    const sql =`SELECT * FROM role`;
     let roleArr = [];
+    const sql =`SELECT * FROM role`;
     db.query(sql, (err, rows) => {
         if (err) throw err;
         for (let i=0; i<rows.length; i++){
